@@ -42,12 +42,15 @@ public class Logger {
     private static final String BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER;
     private static final String MIDDLE_BORDER = MIDDLE_CORNER + SINGLE_DIVIDER;
 
+    /**
+     * 防止实例化
+     */
     private Logger() {
-        //防止实例化
     }
 
     /**
      * 设置默认的TAG
+     *
      * @param tag 默认标签
      */
     public static void setTag(String tag) {
@@ -56,6 +59,7 @@ public class Logger {
 
     /**
      * 设置是否输出日志
+     *
      * @param enable 是否输出日志
      */
     public static void setEnable(boolean enable) {
@@ -64,11 +68,13 @@ public class Logger {
 
     /**
      * 设置是否输出线程信息
+     *
      * @param enableThread 是否输出线程信息
      */
     public static void setEnableThread(boolean enableThread) {
         Logger.enableThread = enableThread;
     }
+
 
     public static void v(String message) {
         Logger.v(tag, message);
@@ -127,6 +133,7 @@ public class Logger {
 
     /**
      * 日志头部
+     *
      * @param level
      * @param tag
      */
@@ -136,6 +143,7 @@ public class Logger {
 
     /**
      * 日志上部内容，包括线程信息和调用位置
+     *
      * @param level
      * @param tag
      */
@@ -147,11 +155,10 @@ public class Logger {
         // StackTrace存储信息的规则：函数调用的先后顺序
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
         for (StackTraceElement stackTraceElement : trace) {
-            if (stackTraceElement.isNativeMethod() || stackTraceElement.getClassName().equals(Thread.class.getName())
-                    || stackTraceElement.getClassName().equals(Logger.class.getName())) {
+            if (!stackTraceElement.isNativeMethod()
+                    && !stackTraceElement.getClassName().equals(Thread.class.getName())
+                    && !stackTraceElement.getClassName().equals(Logger.class.getName())) {
                 //剔除本地方法，剔除线程类，剔除当前类
-                continue;
-            } else {
                 //记录下调用当前类的函数位置
                 StringBuilder builder = new StringBuilder();
                 builder.append("║ ")
@@ -173,15 +180,19 @@ public class Logger {
 
     /**
      * 去除类名中的 .class 后缀
+     *
      * @param name
+     *
      * @return
      */
     private static String getSimpleClassName(String name) {
         int lastIndex = name.lastIndexOf(".");
         return name.substring(lastIndex + 1);
     }
+
     /**
      * 日志的分隔符
+     *
      * @param level
      * @param tag
      */
@@ -191,6 +202,7 @@ public class Logger {
 
     /**
      * 日志的内容
+     *
      * @param level
      * @param tag
      * @param message
@@ -201,6 +213,7 @@ public class Logger {
 
     /**
      * 日志内容的底部
+     *
      * @param level
      * @param tag
      */
@@ -232,6 +245,8 @@ public class Logger {
                     Log.e(tag, message);
                     break;
                 case DEBUG:
+                    Log.d(tag, message);
+                    break;
                 default:
                     Log.v(tag, message);
                     break;
